@@ -39,7 +39,24 @@ void print_bits(void const * const ptr, size_t const size) {
  * @param result - binary value to store the result
  * @return STATUS_CODE - STATUS_SUCCESS if request okay, STATUS_ERROR if out of bounds request
  */
-// TODO: define get_bit function
+
+STATUS_CODE get_bit(uint8_t* data, uint8_t byte_length, uint8_t bit_offset, bool* result)
+{	
+	//Get byte containing offset
+	uint8_t byteOffset = bit_offset / BITS_IN_A_BYTE;
+	
+	if(byteOffset > (byte_length - 1)) //-1 to account for 0 indexing
+		return STATUS_ERROR;
+	
+	//Extract bit
+	uint8_t temp = *(data + byteOffset);
+	temp = (temp >> (bit_offset % BITS_IN_A_BYTE)) & 0x01;
+	
+	//Store into result
+	*result = (bool)temp;
+	
+	return STATUS_SUCCESS;
+}
 
 /**
  * @brief Sets the bit at the given offset to 1.
@@ -50,7 +67,22 @@ void print_bits(void const * const ptr, size_t const size) {
  * @param bit_offset - the offset of the bit to set (0 is lsb)
  * @return STATUS_CODE - STATUS_SUCCESS if request okay, STATUS_ERROR if out of bounds request
  */
-// TODO: define set_bit function
+
+STATUS_CODE set_bit(uint8_t* data, uint8_t byte_length, uint8_t bit_offset)
+{
+	//Get byte offset
+	uint8_t byteOffset = bit_offset / BITS_IN_A_BYTE;
+	
+	if(byteOffset > (byte_length - 1)) //-1 to account for 0 indexing
+		return STATUS_ERROR;
+	
+	//Set bit
+	uint8_t temp = *(data + byteOffset);
+	temp |= (0x01 << (bit_offset % BITS_IN_A_BYTE));
+	*(data + byteOffset) = temp;
+	
+	return STATUS_SUCCESS;	
+}
 
 /**
  * @brief Sets the bit at the given offset to 0.
@@ -61,7 +93,21 @@ void print_bits(void const * const ptr, size_t const size) {
  * @param bit_offset - the offset of the bit to clear (0 is lsb)
  * @return STATUS_CODE - STATUS_SUCCESS if request okay, STATUS_ERROR if out of bounds request
  */
-// TODO: define clear_bit function
+STATUS_CODE clear_bit(uint8_t* data, uint8_t byte_length, uint8_t bit_offset)
+{
+	//Get byte offset
+	uint8_t byteOffset = bit_offset / BITS_IN_A_BYTE;
+	
+	if(byteOffset > (byte_length - 1)) //-1 to account for 0 indexing
+		return STATUS_ERROR;
+	
+	//Clear bit
+	uint8_t temp = *(data + byteOffset);
+	temp &= ~(0x01 << (bit_offset % BITS_IN_A_BYTE));
+	*(data + byteOffset) = temp;
+	
+	return STATUS_SUCCESS;
+}
 
 void get_bit_test() {
   uint8_t pass = 0;
